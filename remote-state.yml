@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  S3TFRemoteState:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: tf-vault-elixir-remote-state
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
