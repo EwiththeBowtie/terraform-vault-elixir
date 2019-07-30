@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  S3TFRemoteState:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: tf-vault-elixir-remote-state
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+  S3TFRemoteStatePolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties: 
+      Bucket: !Ref S3TFRemoteState
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: s3:ListBucket
+            Resource: arn:aws:s3:::tf-vault-elixir-remote-state
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+            Resource: arn:aws:s3:::tf-vault-elixir-remote-state/vault/terraform.tfstate
