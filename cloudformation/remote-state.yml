@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Resources:
-  S3TFRemoteState:
+  S3TfRemoteState:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: tf-vault-elixir-remote-state
@@ -10,18 +10,26 @@ Resources:
               SSEAlgorithm: AES256
       VersioningConfiguration:
         Status: Enabled
-  S3TFRemoteStatePolicy:
-    Type: AWS::S3::BucketPolicy
+  TfRemoteStateGroup:
+    Type: AWS::IAM::Group
     Properties: 
-      Bucket: !Ref S3TFRemoteState
+      GroupName: TfRemoteStateGroup
+  S3TfRemoteStatePolicy:
+    Type: AWS::IAM::Policy
+    Properties: 
+      PolicyName: TerraformRemoteState
+      Groups:
+        - !Ref TfRemoteStateGroup
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Action: s3:ListBucket
-            Resource: arn:aws:s3:::tf-vault-elixir-remote-state
+            Resource: !GetAtt S3TfRemoteState.Arn
           - Effect: Allow
             Action:
               - s3:GetObject
               - s3:PutObject
-            Resource: arn:aws:s3:::tf-vault-elixir-remote-state/vault/terraform.tfstate
+            Resource: !Sub 
+              - '${Arn}/vault/terraform.tfstate'
+              - { Arn: !GetAtt S3TfRemoteState.Arn }
