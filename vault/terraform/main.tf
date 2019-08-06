@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "tf-vault-elixir-remote-state"
+    key    = "vault/terraform.tfstate"
+    region = "us-west-2"
+  }
+}
+
 module "ssh_keypair_aws_override" {
   source = "github.com/hashicorp-modules/ssh-keypair-aws"
 
@@ -15,7 +23,7 @@ resource "random_id" "consul_encrypt" {
 }
 
 module "root_tls_self_signed_ca" {
-   source = "github.com/hashicorp-modules/tls-self-signed-cert"
+  source = "github.com/hashicorp-modules/tls-self-signed-cert"
 
   name              = "${var.name}-root"
   ca_common_name    = "${var.common_name}"
