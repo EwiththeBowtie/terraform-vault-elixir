@@ -160,13 +160,15 @@ module "consul_aws" {
   tags             = "${var.consul_tags}"
   tags_list        = "${var.consul_tags_list}"
 }
-
+data "aws_region" "current" {}
 data "template_file" "vault_user_data" {
   template = "${file("${path.module}/templates/best-practices-vault-systemd.sh.tpl")}"
 
   vars = {
     name            = "${var.name}"
     provider        = "${var.provider}"
+		aws_region      = "${data.aws_region.current.name}"
+		kms_key         = "${aws_kms_key.vault.key_id}"
     local_ip_url    = "${var.local_ip_url}"
     ca_crt          = "${module.root_tls_self_signed_ca.ca_cert_pem}"
     leaf_crt        = "${module.leaf_tls_self_signed_cert.leaf_cert_pem}"
