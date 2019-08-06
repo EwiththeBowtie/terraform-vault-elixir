@@ -110,6 +110,12 @@ listener "tcp" {
   tls_require_and_verify_client_cert = false
   tls_disable_client_certs           = true
 }
+
+seal "awskms" {
+  region     = "${aws_region}"
+  kms_key_id = "${kms_key}"
+}
+
 CONFIG
 
 if [ ${vault_override} == true ] || [ ${vault_override} == 1 ]; then
