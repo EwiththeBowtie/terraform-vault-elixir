@@ -23,6 +23,8 @@ cat <<EOF | sudo tee $CONSUL_TLS_DIR/consul.key $VAULT_TLS_DIR/consul.key $VAULT
 ${leaf_key}
 EOF
 
+sudo mkdir --parents $CONSUL_CONFIG_DIR
+sudo mkdir --parents $VAULT_CONFIG_DIR
 sudo chown -R consul:consul $CONSUL_TLS_DIR $CONSUL_CONFIG_DIR
 sudo chown -R vault:vault $VAULT_TLS_DIR $VAULT_CONFIG_DIR
 
