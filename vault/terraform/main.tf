@@ -6,6 +6,16 @@ terraform {
   }
 }
 
+data "aws_ami" "vault-consul-amazon-linux-2" {
+  most_recent      = true
+  owners           = ["self"]
+
+  filter {
+    name   = "name"
+    values = ["vault-consul-amazon-linux-2-*"]
+  }
+}
+
 module "ssh_keypair_aws_override" {
   source = "github.com/hashicorp-modules/ssh-keypair-aws"
 
@@ -197,7 +207,7 @@ module "vault_aws" {
   count            = "${var.vault_servers}"
   instance_profile = "${module.consul_auto_join_instance_role.instance_profile_id}" # Override instance_profile
   instance_type    = "${var.vault_instance}"
-  image_id         = "${var.vault_image_id}"
+  image_id         = "${data.aws_ami.vault-consul-amazon-linux-2.image_id}"
   public           = "${var.vault_public}"
   use_lb_cert      = true
   lb_cert          = "${module.leaf_tls_self_signed_cert.leaf_cert_pem}"
@@ -236,4 +246,15 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
     ]
   }
 }
-						
+
+resource "aws_iam_policy" "vault-kms-unseal" {
+  name        = "vault-kms-unseal"
+  description = "Allow vault instance profile to access kms-key for unsealing"
+
+  policy ="${data.aws_iam_policy_document.vault-kms-unseal.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "vault-kms-unseal" {
+	role       = "${module.consul_auto_join_instance_role.iam_role_id}"
+  policy_arn = "${aws_iam_policy.vault-kms-unseal.arn}"
+}
