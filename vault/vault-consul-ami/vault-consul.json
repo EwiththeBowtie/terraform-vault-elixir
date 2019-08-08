@@ -61,7 +61,19 @@
     ]
     ,
     "inline_shebang": "/bin/bash -e"
+  },{
+    "type": "file",
+    "source": "./install-vault/consul.service",
+    "destination": "/tmp/consul.service"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/consul.service /etc/systemd/system/"
+    ]
+    ,
+    "inline_shebang": "/bin/bash -e"
   },
+
   {
     "type": "shell",
     "inline": [
