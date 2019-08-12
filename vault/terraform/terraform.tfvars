@@ -1,5 +1,5 @@
 name           = "tf-vault-elixir"
-bastion_instance       = "t2.micro"
+bastion_instance       = "t3.nano"
 
 network_tags = {"owner" = "tf-vault-elixir", "TTL" = "24"}
 
