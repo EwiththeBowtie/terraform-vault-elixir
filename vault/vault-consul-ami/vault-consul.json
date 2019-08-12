@@ -12,7 +12,7 @@
   "builders": [{
     "ami_name": "vault-consul-amazon-linux-2-{{isotime | clean_ami_name}}-{{uuid}}",
     "ami_description": "An Amazon Linux 2 AMI that has Vault and Consul installed.",
-    "instance_type": "t2.micro",
+    "instance_type": "t3.micro",
     "name": "amazon-linux-2-ami",
     "region": "{{user `aws_region`}}",
     "type": "amazon-ebs",
