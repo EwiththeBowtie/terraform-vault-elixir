@@ -1,5 +1,5 @@
 name           = "tf-vault-elixir"
-bastion_instance       = "t2.micro"
+bastion_instance       = "t2.nano"
 
 network_tags = {"owner" = "tf-vault-elixir", "TTL" = "24"}
 
@@ -7,7 +7,7 @@ network_tags = {"owner" = "tf-vault-elixir", "TTL" = "24"}
 # Consul Variables
 # ---------------------------------------------------------------------------------------------------------------------
 # consul_servers    = 1 # Number of Consul servers to provision across public subnets, defaults to public subnet count.
-consul_instance   = "t2.micro"
+consul_instance   = "t3.nano"
 consul_tags = {"owner" = "tf-vault-elixir", "TTL" = "24"}
 
 # ---------------------------------------------------------------------------------------------------------------------
