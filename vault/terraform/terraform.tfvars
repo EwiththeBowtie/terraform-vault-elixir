@@ -14,6 +14,6 @@ consul_tags = {"owner" = "tf-vault-elixir", "TTL" = "24"}
 # Vault Variables
 # ---------------------------------------------------------------------------------------------------------------------
 vault_servers    = 1 # Number of Vault servers, defaults to public count
-vault_instance   = "t2.micro"
+vault_instance   = "t3.nano"
 vault_release    = "1.2.1"
 vault_version    = "1.2.1"
