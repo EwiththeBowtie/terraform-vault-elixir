@@ -14,6 +14,7 @@
 ### Auto unseal with AWS KMS
 #### Log in to bastion
 `ssh-add <tf-vault-elixir-override-<xxxxxxx>.key.pem>`
+
 `ssh -A -i <generated pem key> ec2-user@<bastion-ip>`
 #### Log into vault server (pre unseal)
 `ssh -A ec2-user@$(curl http://127.0.0.1:8500/v1/agent/members | jq -M -r \
