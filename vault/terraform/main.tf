@@ -159,7 +159,7 @@ module "consul_aws" {
   count            = "${var.consul_servers}"
   instance_profile = "${module.consul_auto_join_instance_role.instance_profile_id}" # Override instance_profile
   instance_type    = "${var.consul_instance}"
-  image_id         = "${var.consul_image_id}"
+  image_id         = "${data.aws_ami.vault-consul-amazon-linux-2.image_id}"
   public           = "${var.consul_public}"
   use_lb_cert      = true
   lb_cert          = "${module.leaf_tls_self_signed_cert.leaf_cert_pem}"
