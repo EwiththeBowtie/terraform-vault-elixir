@@ -21,6 +21,7 @@ cat <<EOF | sudo tee $CONSUL_TLS_DIR/consul.key
 ${leaf_key}
 EOF
 
+sudo mkdir --parents $CONSUL_CONFIG_DIR
 sudo chown -R consul:consul $CONSUL_TLS_DIR $CONSUL_CONFIG_DIR
 
 echo "Configure Consul server"
