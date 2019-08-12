@@ -1,3 +1,21 @@
+terraform {
+  backend "s3" {
+    bucket = "tf-vault-elixir-remote-state"
+    key    = "vault/terraform.tfstate"
+    region = "us-west-2"
+  }
+}
+
+data "aws_ami" "vault-consul-amazon-linux-2" {
+  most_recent      = true
+  owners           = ["self"]
+
+  filter {
+    name   = "name"
+    values = ["vault-consul-amazon-linux-2-*"]
+  }
+}
+
 module "ssh_keypair_aws_override" {
   source = "github.com/hashicorp-modules/ssh-keypair-aws"
 
@@ -15,7 +33,7 @@ resource "random_id" "consul_encrypt" {
 }
 
 module "root_tls_self_signed_ca" {
-   source = "github.com/hashicorp-modules/tls-self-signed-cert"
+  source = "github.com/hashicorp-modules/tls-self-signed-cert"
 
   name              = "${var.name}-root"
   ca_common_name    = "${var.common_name}"
@@ -141,7 +159,7 @@ module "consul_aws" {
   count            = "${var.consul_servers}"
   instance_profile = "${module.consul_auto_join_instance_role.instance_profile_id}" # Override instance_profile
   instance_type    = "${var.consul_instance}"
-  image_id         = "${var.consul_image_id}"
+  image_id         = "${data.aws_ami.vault-consul-amazon-linux-2.image_id}"
   public           = "${var.consul_public}"
   use_lb_cert      = true
   lb_cert          = "${module.leaf_tls_self_signed_cert.leaf_cert_pem}"
@@ -152,13 +170,15 @@ module "consul_aws" {
   tags             = "${var.consul_tags}"
   tags_list        = "${var.consul_tags_list}"
 }
-
+data "aws_region" "current" {}
 data "template_file" "vault_user_data" {
   template = "${file("${path.module}/templates/best-practices-vault-systemd.sh.tpl")}"
 
   vars = {
     name            = "${var.name}"
     provider        = "${var.provider}"
+		aws_region      = "${data.aws_region.current.name}"
+		kms_key         = "${aws_kms_key.vault.key_id}"
     local_ip_url    = "${var.local_ip_url}"
     ca_crt          = "${module.root_tls_self_signed_ca.ca_cert_pem}"
     leaf_crt        = "${module.leaf_tls_self_signed_cert.leaf_cert_pem}"
@@ -187,7 +207,7 @@ module "vault_aws" {
   count            = "${var.vault_servers}"
   instance_profile = "${module.consul_auto_join_instance_role.instance_profile_id}" # Override instance_profile
   instance_type    = "${var.vault_instance}"
-  image_id         = "${var.vault_image_id}"
+  image_id         = "${data.aws_ami.vault-consul-amazon-linux-2.image_id}"
   public           = "${var.vault_public}"
   use_lb_cert      = true
   lb_cert          = "${module.leaf_tls_self_signed_cert.leaf_cert_pem}"
@@ -197,4 +217,44 @@ module "vault_aws" {
   ssh_key_name     = "${module.ssh_keypair_aws_override.name}"
   tags             = "${var.vault_tags}"
   tags_list        = "${var.vault_tags_list}"
+}
+
+resource "random_pet" "env" {
+  length    = 2
+  separator = "_"
+}
+
+resource "aws_kms_key" "vault" {
+  description             = "Vault unseal key"
+  deletion_window_in_days = 10
+
+  tags = {
+    Name = "vault-kms-unseal-${random_pet.env.id}"
+  }
+}
+
+data "aws_iam_policy_document" "vault-kms-unseal" {
+  statement {
+    sid       = "VaultKMSUnseal"
+    effect    = "Allow"
+    resources = ["${aws_kms_key.vault.arn}"]
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:DescribeKey",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "vault-kms-unseal" {
+  name        = "vault-kms-unseal"
+  description = "Allow vault instance profile to access kms-key for unsealing"
+
+  policy ="${data.aws_iam_policy_document.vault-kms-unseal.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "vault-kms-unseal" {
+	role       = "${module.consul_auto_join_instance_role.iam_role_id}"
+  policy_arn = "${aws_iam_policy.vault-kms-unseal.arn}"
 }

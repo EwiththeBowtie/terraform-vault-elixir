@@ -1,0 +1,115 @@
+{
+  "min_packer_version": "0.12.0",
+  "variables": {
+    "aws_region": "us-west-2",
+    "vault_version": "1.2.0",
+    "consul_module_version": "v0.7.3",
+    "consul_version": "1.5.3",
+    "consul_download_url": "{{env `CONSUL_DOWNLOAD_URL`}}",
+    "vault_download_url": "{{env `VAULT_DOWNLOAD_URL`}}",
+    "install_auth_signing_script": "true"
+  },
+  "builders": [{
+    "ami_name": "vault-consul-amazon-linux-2-{{isotime | clean_ami_name}}-{{uuid}}",
+    "ami_description": "An Amazon Linux 2 AMI that has Vault and Consul installed.",
+    "instance_type": "t3.micro",
+    "name": "amazon-linux-2-ami",
+    "region": "{{user `aws_region`}}",
+    "type": "amazon-ebs",
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "architecture": "x86_64",
+        "name": "*amzn2-ami-hvm-*",
+        "block-device-mapping.volume-type": "gp2",
+        "root-device-type": "ebs"
+      },
+      "owners": ["amazon"],
+      "most_recent": true
+    },
+    "ssh_username": "ec2-user"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": ["mkdir -p /tmp/terraform-aws-vault/modules"]
+  },{
+    "type": "file",
+    "source": "./",
+    "destination": "/tmp/terraform-aws-vault/modules",
+    "pause_before": "30s"
+  },{
+    "type": "shell",
+    "inline": [
+      "if test -n \"{{user `vault_download_url`}}\"; then",
+      " /tmp/terraform-aws-vault/modules/install-vault/install-vault --download-url {{user `vault_download_url`}};",
+      "else",
+      " /tmp/terraform-aws-vault/modules/install-vault/install-vault --version {{user `vault_version`}};",
+      "fi"
+    ]
+  },{
+    "type": "file",
+    "source": "./auth/sign-request.py",
+    "destination": "/tmp/sign-request.py"
+  },{
+    "type": "file",
+    "source": "./install-vault/vault.service",
+    "destination": "/tmp/vault.service"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/vault.service /etc/systemd/system/"
+    ]
+    ,
+    "inline_shebang": "/bin/bash -e"
+  },{
+    "type": "file",
+    "source": "./install-vault/consul.service",
+    "destination": "/tmp/consul.service"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/consul.service /etc/systemd/system/"
+    ]
+    ,
+    "inline_shebang": "/bin/bash -e"
+  },
+
+  {
+    "type": "shell",
+    "inline": [
+      "if [[ '{{user `install_auth_signing_script`}}' == 'true' ]]; then",
+      "sudo mv /tmp/sign-request.py /opt/vault/scripts/",
+      "else",
+      "sudo rm /tmp/sign-request.py",
+      "fi"
+    ]
+    ,
+    "inline_shebang": "/bin/bash -e"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo yum install -y git",
+      "if [[ '{{user `install_auth_signing_script`}}' == 'true' ]]; then",
+      "sudo yum install -y python2-pip",
+        "LC_ALL=C && sudo pip install boto3",
+      "fi"
+    ],
+    "only": ["amazon-linux-2-ami"]
+  },{
+    "type": "shell",
+    "inline": [
+      "git clone --branch {{user `consul_module_version`}} https://github.com/hashicorp/terraform-aws-consul.git /tmp/terraform-aws-consul",
+      "if test -n \"{{user `consul_download_url`}}\"; then",
+      " /tmp/terraform-aws-consul/modules/install-consul/install-consul --download-url {{user `consul_download_url`}};",
+      "else",
+      " /tmp/terraform-aws-consul/modules/install-consul/install-consul --version {{user `consul_version`}};",
+      "fi"
+    ],
+    "pause_before": "30s"
+  },{
+    "type": "shell",
+    "only": ["amazon-linux-2-ami"],
+    "inline": [
+      "/tmp/terraform-aws-consul/modules/install-dnsmasq/install-dnsmasq"
+  ]}
+]}
