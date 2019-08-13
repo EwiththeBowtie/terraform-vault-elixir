@@ -258,3 +258,27 @@ resource "aws_iam_role_policy_attachment" "vault-kms-unseal" {
 	role       = "${module.consul_auto_join_instance_role.iam_role_id}"
   policy_arn = "${aws_iam_policy.vault-kms-unseal.arn}"
 }
+
+data "aws_iam_policy_document" "vault-aws-iam" {
+  statement {
+    sid       = "VaultAwsIam"
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+			"iam:GetUser"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "vault-aws-iam" {
+  name        = "vault-aws-iam"
+  description = "Allow vault to get aws iam policies"
+
+  policy ="${data.aws_iam_policy_document.vault-aws-iam.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "vault-aws-iam" {
+	role       = "${module.consul_auto_join_instance_role.iam_role_id}"
+  policy_arn = "${aws_iam_policy.vault-aws-iam.arn}"
+}
