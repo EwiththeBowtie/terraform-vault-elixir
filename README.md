@@ -21,3 +21,20 @@
       '[.[] | select(.Name | contains ("tf-vault-elixir-vault")) | .Addr][0]')`
 #### Unseal vault
 `vault operator init -recovery-shares=1 -recovery-threshold=1`
+ 
+## Tips and Tricks
+### Local Port Forwarding for Vault
+#### Add ssh config
+``` 
+Host bastion
+  Hostname 34.219.188.84 
+  User ec2-user
+  IdentityFile  ~/dev/tf-vault-elixir/tf-vault-elixir-override-89cd452a.key.pem
+
+Host vault.service.consul 
+  IdentityFile  ~/dev/tf-vault-elixir/tf-vault-elixir-override-89cd452a.key.pem
+  User ec2-user
+  ProxyCommand ssh -W %h:%p  ec2-user@bastion
+```
+#### Start local port fowarding
+`ssh -fCNL 8200:localhost:8200  ec2-user@vault.service.consul`
