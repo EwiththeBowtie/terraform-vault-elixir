@@ -6,6 +6,10 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = "us-west-2"
+}
+
 data "aws_ami" "vault-consul-amazon-linux-2" {
   most_recent      = true
   owners           = ["self"]
