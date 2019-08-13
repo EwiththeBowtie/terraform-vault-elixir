@@ -11,8 +11,8 @@ provider "aws" {
 }
 
 data "aws_ami" "vault-consul-amazon-linux-2" {
-  most_recent      = true
-  owners           = ["self"]
+  most_recent = true
+  owners      = ["self"]
 
   filter {
     name   = "name"
@@ -125,7 +125,7 @@ module "network_aws" {
   instance_profile  = "${module.consul_auto_join_instance_role.instance_profile_id}" # override instance_profile
   instance_type     = "${var.bastion_instance}"
   image_id          = "${data.aws_ami.vault-consul-amazon-linux-2.image_id}"
-  user_data         = "${data.template_file.bastion_user_data.rendered}" # override user_data
+  user_data         = "${data.template_file.bastion_user_data.rendered}"             # override user_data
   ssh_key_name      = "${module.ssh_keypair_aws_override.name}"
   ssh_key_override  = true
   private_key_file  = "${module.ssh_keypair_aws_override.private_key_filename}"
@@ -152,7 +152,7 @@ data "template_file" "consul_user_data" {
 module "consul_aws" {
   source = "github.com/hashicorp-modules/consul-aws"
 
-  name             = "${var.name}" # Must match network_aws module name for Consul Auto Join to work
+  name             = "${var.name}"                                                                                                                           # Must match network_aws module name for Consul Auto Join to work
   vpc_id           = "${module.network_aws.vpc_id}"
   vpc_cidr         = "${module.network_aws.vpc_cidr}"
   subnet_ids       = "${split(",", var.consul_public ? join(",", module.network_aws.subnet_public_ids) : join(",", module.network_aws.subnet_private_ids))}"
@@ -161,7 +161,7 @@ module "consul_aws" {
   os               = "${var.consul_os}"
   os_version       = "${var.consul_os_version}"
   count            = "${var.consul_servers}"
-  instance_profile = "${module.consul_auto_join_instance_role.instance_profile_id}" # Override instance_profile
+  instance_profile = "${module.consul_auto_join_instance_role.instance_profile_id}"                                                                          # Override instance_profile
   instance_type    = "${var.consul_instance}"
   image_id         = "${data.aws_ami.vault-consul-amazon-linux-2.image_id}"
   public           = "${var.consul_public}"
@@ -169,20 +169,22 @@ module "consul_aws" {
   lb_cert          = "${module.leaf_tls_self_signed_cert.leaf_cert_pem}"
   lb_private_key   = "${module.leaf_tls_self_signed_cert.leaf_private_key_pem}"
   lb_cert_chain    = "${module.root_tls_self_signed_ca.ca_cert_pem}"
-  user_data        = "${data.template_file.consul_user_data.rendered}" # Custom user_data
+  user_data        = "${data.template_file.consul_user_data.rendered}"                                                                                       # Custom user_data
   ssh_key_name     = "${module.ssh_keypair_aws_override.name}"
   tags             = "${var.consul_tags}"
   tags_list        = "${var.consul_tags_list}"
 }
+
 data "aws_region" "current" {}
+
 data "template_file" "vault_user_data" {
   template = "${file("${path.module}/templates/best-practices-vault-systemd.sh.tpl")}"
 
   vars = {
     name            = "${var.name}"
     provider        = "${var.provider}"
-		aws_region      = "${data.aws_region.current.name}"
-		kms_key         = "${aws_kms_key.vault.key_id}"
+    aws_region      = "${data.aws_region.current.name}"
+    kms_key         = "${aws_kms_key.vault.key_id}"
     local_ip_url    = "${var.local_ip_url}"
     ca_crt          = "${module.root_tls_self_signed_ca.ca_cert_pem}"
     leaf_crt        = "${module.leaf_tls_self_signed_cert.leaf_cert_pem}"
@@ -199,7 +201,7 @@ data "template_file" "vault_user_data" {
 module "vault_aws" {
   source = "github.com/hashicorp-modules/vault-aws"
 
-  name             = "${var.name}" # Must match network_aws module name for Consul Auto Join to work
+  name             = "${var.name}"                                                                                                                          # Must match network_aws module name for Consul Auto Join to work
   vpc_id           = "${module.network_aws.vpc_id}"
   vpc_cidr         = "${module.network_aws.vpc_cidr}"
   subnet_ids       = "${split(",", var.vault_public ? join(",", module.network_aws.subnet_public_ids) : join(",", module.network_aws.subnet_private_ids))}"
@@ -209,7 +211,7 @@ module "vault_aws" {
   os               = "${var.vault_os}"
   os_version       = "${var.vault_os_version}"
   count            = "${var.vault_servers}"
-  instance_profile = "${module.consul_auto_join_instance_role.instance_profile_id}" # Override instance_profile
+  instance_profile = "${module.consul_auto_join_instance_role.instance_profile_id}"                                                                         # Override instance_profile
   instance_type    = "${var.vault_instance}"
   image_id         = "${data.aws_ami.vault-consul-amazon-linux-2.image_id}"
   public           = "${var.vault_public}"
@@ -217,7 +219,7 @@ module "vault_aws" {
   lb_cert          = "${module.leaf_tls_self_signed_cert.leaf_cert_pem}"
   lb_private_key   = "${module.leaf_tls_self_signed_cert.leaf_private_key_pem}"
   lb_cert_chain    = "${module.root_tls_self_signed_ca.ca_cert_pem}"
-  user_data        = "${data.template_file.vault_user_data.rendered}" # Custom user_data
+  user_data        = "${data.template_file.vault_user_data.rendered}"                                                                                       # Custom user_data
   ssh_key_name     = "${module.ssh_keypair_aws_override.name}"
   tags             = "${var.vault_tags}"
   tags_list        = "${var.vault_tags_list}"
@@ -255,11 +257,11 @@ resource "aws_iam_policy" "vault-kms-unseal" {
   name        = "vault-kms-unseal"
   description = "Allow vault instance profile to access kms-key for unsealing"
 
-  policy ="${data.aws_iam_policy_document.vault-kms-unseal.json}"
+  policy = "${data.aws_iam_policy_document.vault-kms-unseal.json}"
 }
 
 resource "aws_iam_role_policy_attachment" "vault-kms-unseal" {
-	role       = "${module.consul_auto_join_instance_role.iam_role_id}"
+  role       = "${module.consul_auto_join_instance_role.iam_role_id}"
   policy_arn = "${aws_iam_policy.vault-kms-unseal.arn}"
 }
 
@@ -270,7 +272,7 @@ data "aws_iam_policy_document" "vault-aws-iam" {
     resources = ["*"]
 
     actions = [
-			"iam:GetUser"
+      "iam:GetUser",
     ]
   }
 }
@@ -279,10 +281,25 @@ resource "aws_iam_policy" "vault-aws-iam" {
   name        = "vault-aws-iam"
   description = "Allow vault to get aws iam policies"
 
-  policy ="${data.aws_iam_policy_document.vault-aws-iam.json}"
+  policy = "${data.aws_iam_policy_document.vault-aws-iam.json}"
 }
 
 resource "aws_iam_role_policy_attachment" "vault-aws-iam" {
-	role       = "${module.consul_auto_join_instance_role.iam_role_id}"
+  role       = "${module.consul_auto_join_instance_role.iam_role_id}"
   policy_arn = "${aws_iam_policy.vault-aws-iam.arn}"
+}
+
+data "template_file" "ssh_config" {
+  template = "${file("${path.module}/templates/terraform-vault-elixir.config.tpl")}"
+
+  vars = {
+    bastion_ip           = "${element(module.network_aws.bastion_ips_public,0)}"
+    path                 = "${path.module}"
+    private_key_filename = "${module.ssh_keypair_aws_override.private_key_filename}"
+  }
+}
+
+resource "local_file" "ssh_config" {
+  content  = "${data.template_file.ssh_config.rendered}"
+	filename = "${path.module}/ssh.config"
 }
