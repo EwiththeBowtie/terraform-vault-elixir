@@ -49,6 +49,12 @@ SSH into other Consul or Vault nodes if they exist.
 
 ${module.vault_aws.zREADME}
 ${module.consul_aws.zREADME}
+
+# ------------------------------------------------------------------------------
+# Add SSH key to Configure Vault!!! 
+# ------------------------------------------------------------------------------
+
+  $ ssh-add ${path.module}/${module.ssh_keypair_aws_override.private_key_filename} 
 README
 }
 
