@@ -273,6 +273,8 @@ data "aws_iam_policy_document" "vault-aws-iam" {
 
     actions = [
       "iam:GetUser",
+			"iam:GetRole",
+			"sts:AssumeRole"
     ]
   }
 }
