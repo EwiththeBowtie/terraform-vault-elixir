@@ -7,5 +7,5 @@ Host bastion
 Host vault.service.consul 
   IdentityFile ${path}/${private_key_filename}
   User ec2-user
-  ProxyCommand ssh -W %h:%p  ec2-user@bastion
+  ProxyCommand ssh -F ./vault/terraform/ssh.config -W %h:%p  ec2-user@bastion
 
