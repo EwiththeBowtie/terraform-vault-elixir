@@ -60,10 +60,13 @@ ${module.consul_aws.zREADME}
 # Initialize Vault (Auto-Unseal)
 # ------------------------------------------------------------------------------
   $ ./bin/ssh_into_vault.sh
-	$ vault operator init -recovery-shares=1 -recovery-threshold=1
+  $ vault operator init -recovery-shares=1 -recovery-threshold=1
+  # NOTE THE ROOT TOKEN, YOU'LL NEED IT (FOR NOW, we'll burn it later.  In the fires of mount Doom.)
 
-	NOTE THE ROOT TOKEN, YOU'LL NEED IT (FOR NOW, we'll burn it later.  In the fires of mount Doom.)
-
+# ------------------------------------------------------------------------------
+# Set Up Vault
+# ------------------------------------------------------------------------------
+	
 README
 }
 
