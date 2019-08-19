@@ -205,9 +205,9 @@ module "vault_aws" {
   vpc_id           = "${module.network_aws.vpc_id}"
   vpc_cidr         = "${module.network_aws.vpc_cidr}"
   subnet_ids       = "${split(",", var.vault_public ? join(",", module.network_aws.subnet_public_ids) : join(",", module.network_aws.subnet_private_ids))}"
-  release_version  = "${var.vault_release}"
-  vault_version    = "${var.vault_version}"
-  consul_version   = "${var.consul_version}"
+	release_version  = "${var.vault_release}" vault_version    =
+	"${var.vault_version}"
+	consul_version   = "${var.consul_version}"
   os               = "${var.vault_os}"
   os_version       = "${var.vault_os_version}"
   count            = "${var.vault_servers}"
