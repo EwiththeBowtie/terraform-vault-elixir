@@ -15,12 +15,18 @@ Bash scripts in the bin folder of the project document every step of the process
 This project follows two core principles:
 * Impermanence
 * Reproducibility
+
 Impermanence is a priority because we want our servers to be cattle, not pets. We should be able to create, scale, or destroy each piece of our infrastructure at any time for whatever reason.  Eliminating a development environment at any time helps us keep down costs. In production, being able to add or remove servers based on load is critical.
+
 Reproducibility is a priority because it is a challenge to find complete infrastructure guides demonstrating how to glue all the pieces together.  By starting our infrastructure from scratch every day, we can ensure some degree that someone trying this repo will be able to get up and to run.
+
 We practice the principles of Impermanence and Reproducibility by creating our development infrastructure from scratch every morning and destroying it every night.  To support this, every command you will need to run is documented in a shell script.
 ## Sources
+
 This repo heavily borrows from Hashicorps excellent Vault Best Practices guide: https://github.com/hashicorp/vault-guides/tree/master/operations/provision-vault/best-practices/terraform-aws
+
 I also highly recommend this webinar by Becca Petrin from Hashicorp: https://www.youtube.com/watch?v=fOybhcbuxJ0 
+
 ## Prerequisits 
   * [AWS CLI](https://formulae.brew.sh/formula/awscli)
   * [Terraform 0.11](https://formulae.brew.sh/formula/terraform@0.11)
