@@ -1,7 +1,8 @@
 # terraform-vault-elixir
 ## Prerequisits 
-  * AWS CLI
-  * Terraform 0.12
+  * [AWS CLI](https://formulae.brew.sh/formula/awscli)
+  * [Terraform 0.11](https://formulae.brew.sh/formula/terraform@0.11)
+  * [Packer](https://formulae.brew.sh/formula/packer)
   * An AWS account
   
 ## Getting Started
@@ -9,15 +10,23 @@
 `./bin/create_remote_state_stack.sh`
 ### Add user to remote state group
 `./bin/add_user_to_remote_state_group.sh <AWS_USERNAME>`
+### Build Vault Consul AMI (Packer)
+`./bin/build_vault_ami.sh`
 ## Creating Vault
 `./bin/apply_vault_terraform.sh` 
-### Auto unseal with AWS KMS
-#### Log in to bastion
-`ssh-add <tf-vault-elixir-override-<xxxxxxx>.key.pem>`
-
-`ssh -A -i <generated pem key> ec2-user@<bastion-ip>`
-#### Log into vault server (pre unseal)
-`ssh -A ec2-user@$(curl http://127.0.0.1:8500/v1/agent/members | jq -M -r \
-      '[.[] | select(.Name | contains ("tf-vault-elixir-vault")) | .Addr][0]')`
+### Setup auto unseal with AWS KMS (required)
+#### SSH into Vault
+`./bin/ssh_into_vault.sh`
 #### Unseal vault
 `vault operator init -recovery-shares=1 -recovery-threshold=1`
+### Setup Vault Admin User
+```
+$ ./bin/enable_local_port_forwarding_for_vault.sh`
+$ ./bin/apply_vault_setup_terraform.sh`
+$ var.admin_password
+$   Enter a value: <password>
+$
+$ var.admin_username
+$   Enter a value: <username>
+
+```
