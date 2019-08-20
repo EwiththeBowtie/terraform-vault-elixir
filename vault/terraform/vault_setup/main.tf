@@ -18,7 +18,7 @@ provider "vault" {
 
 	$ export VAULT_ADDR=https://127.0.0.1:8200
 	$ export VAULT_TOKEN=<VALID_VAULT_TOKEN>
-	$export VAULT_SKIP_VERIFY=true 
+	$ export VAULT_SKIP_VERIFY=true 
 	 TODO: Set up vaild cert locally
 	*/
 }
