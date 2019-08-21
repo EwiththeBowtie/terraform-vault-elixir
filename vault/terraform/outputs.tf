@@ -1,7 +1,7 @@
 output "zREADME" {
   value = <<README
 
-Your "${var.name}" AWS Vault Best Practices cluster has been
+Your "${var.name}" AWS Vault cluster has been
 successfully provisioned!
 
 ${module.network_aws.zREADME}To force the generation of a new key, the private key instance can be "tainted"
@@ -25,13 +25,10 @@ requests to work.
 `vault_public`: ${var.vault_public}
 `consul_public`: ${var.consul_public}
 
-  $ export VAULT_ADDR=https://${module.vault_aws.vault_lb_dns}:8200
   $ export VAULT_CACERT=./${module.leaf_tls_self_signed_cert.ca_cert_filename}
   $ export VAULT_CLIENT_CERT=./${module.leaf_tls_self_signed_cert.leaf_cert_filename}
   $ export VAULT_CLIENT_KEY=./${module.leaf_tls_self_signed_cert.leaf_private_key_filename}
 
-  $ export CONSUL_ADDR=https://${module.consul_aws.consul_lb_dns}:8080 # HTTPS
-  $ export CONSUL_ADDR=http://${module.consul_aws.consul_lb_dns}:8500 # HTTP
   $ export CONSUL_CACERT=./${module.leaf_tls_self_signed_cert.ca_cert_filename}
   $ export CONSUL_CLIENT_CERT=./${module.leaf_tls_self_signed_cert.leaf_cert_filename}
   $ export CONSUL_CLIENT_KEY=./${module.leaf_tls_self_signed_cert.leaf_private_key_filename}\n" : ""}
@@ -46,9 +43,6 @@ SSH into other Consul or Vault nodes if they exist.
 
   # Vault must be initialized & unsealed for this command to work
   $ ssh -A ${module.vault_aws.vault_username}@vault.service.consul
-
-${module.vault_aws.zREADME}
-${module.consul_aws.zREADME}
 
 # ------------------------------------------------------------------------------
 # Add SSH key to Configure Vault!!! 
