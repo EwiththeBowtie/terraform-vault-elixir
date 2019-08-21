@@ -1,4 +1,5 @@
 name           = "tf-vault-elixir"
+download_certs = "true"
 bastion_instance       = "t3.nano"
 
 network_tags = {"owner" = "tf-vault-elixir", "TTL" = "24"}
