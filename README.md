@@ -12,7 +12,7 @@
     + [Setup auto unseal with AWS KMS (required)](#setup-auto-unseal-with-aws-kms-required)
       - [SSH into Vault](#ssh-into-vault)
       - [Unseal vault](#unseal-vault)
-    + [Setup Vault Admin User](#setup-vault-admin-user)%
+    + [Setup Vault Admin User](#setup-vault-admin-user)
 ## Purpose
 The purpose of terraform-vault-elixir is to quickly and easily set up Vault and Consul for an Elixir application in AWS following best practices.  The terraform-vault-elixir set up includes:
 * Creating a secure Terraform backend
