@@ -1,3 +1,17 @@
+- [terraform-vault-elixir](#terraform-vault-elixir)
+  * [Purpose](#purpose)
+  * [Development Process and Principles](#development-process-and-principles)
+  * [Sources](#sources)
+  * [Prerequisits](#prerequisits)
+  * [Getting Started](#getting-started)
+    + [Create Terraform Remote State (S3 non-locking)](#create-terraform-remote-state-s3-non-locking)
+    + [Add user to remote state group](#add-user-to-remote-state-group)
+    + [Build Vault Consul AMI (Packer)](#build-vault-consul-ami-packer)
+  * [Creating Vault](#creating-vault)
+    + [Setup auto unseal with AWS KMS (required)](#setup-auto-unseal-with-aws-kms-required)
+      - [SSH into Vault](#ssh-into-vault)
+      - [Unseal vault](#unseal-vault)
+    + [Setup Vault Admin User](#setup-vault-admin-user)%
 # terraform-vault-elixir
 ## Purpose
 The purpose of terraform-vault-elixir is to quickly and easily set up Vault and Consul for an Elixir application in AWS following best practices.  The terraform-vault-elixir set up includes:
@@ -43,7 +57,7 @@ I also highly recommend this webinar by Becca Petrin from Hashicorp: https://www
 ## Creating Vault
 `./bin/apply_vault_terraform.sh` 
 ### Setup auto unseal with AWS KMS (required)
-#### SSH into Vault
+###9# SSH into Vault
 `./bin/ssh_into_vault.sh`
 #### Unseal vault
 `vault operator init -recovery-shares=1 -recovery-threshold=1`
