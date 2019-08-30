@@ -1,4 +1,5 @@
 # terraform-vault-elixir
+![](/images/aws_default_diagram.svg)
 - [terraform-vault-elixir](#terraform-vault-elixir)
   * [Purpose](#purpose)
   * [Development Process and Principles](#development-process-and-principles)
