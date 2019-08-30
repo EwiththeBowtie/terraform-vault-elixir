@@ -58,10 +58,11 @@ I also highly recommend this webinar by Becca Petrin from Hashicorp: https://www
 ## Creating Vault
 `./bin/apply_vault_terraform.sh` 
 ### Setup auto unseal with AWS KMS (required)
-###9# SSH into Vault
+#### SSH into Vault
 `./bin/ssh_into_vault.sh`
 #### Unseal vault
 `vault operator init -recovery-shares=1 -recovery-threshold=1`
+
 Be sure to save the Root Token! We'll burn it later once we've set up a Vault admin user.
 
 ### Setup Vault Admin User
