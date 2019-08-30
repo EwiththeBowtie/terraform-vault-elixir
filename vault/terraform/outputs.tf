@@ -60,7 +60,21 @@ SSH into other Consul or Vault nodes if they exist.
 # ------------------------------------------------------------------------------
 # Set Up Vault
 # ------------------------------------------------------------------------------
-	
+		
+  $ ./bin/enable_local_port_forwarding_for_vault.sh
+  $ 
+  $ export VAULT_ADDR=https://127.0.0.1:8200
+  $ export VAULT_TOKEN=<VALID_VAULT_TOKEN>
+  $ export VAULT_SKIP_VERIFY=true 
+  $
+  $ ./bin/apply_vault_setup_terraform.sh`
+  $ 
+	$ var.admin_password
+  $   Enter a value: <password>
+  $
+  $ var.admin_username
+  $   Enter a value: <username>
+
 README
 }
 
