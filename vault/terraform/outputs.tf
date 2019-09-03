@@ -25,13 +25,13 @@ requests to work.
 `vault_public`: ${var.vault_public}
 `consul_public`: ${var.consul_public}
 
-  $ export VAULT_CACERT=../${module.leaf_tls_self_signed_cert.ca_cert_filename}
-  $ export VAULT_CLIENT_CERT=../${module.leaf_tls_self_signed_cert.leaf_cert_filename}
-  $ export VAULT_CLIENT_KEY=../${module.leaf_tls_self_signed_cert.leaf_private_key_filename}
+  $ export VAULT_CACERT=${path.cwd}/${module.leaf_tls_self_signed_cert.ca_cert_filename}
+  $ export VAULT_CLIENT_CERT=${path.cwd}/${module.leaf_tls_self_signed_cert.leaf_cert_filename}
+  $ export VAULT_CLIENT_KEY=${path.cwd}/${module.leaf_tls_self_signed_cert.leaf_private_key_filename}
 
-  $ export CONSUL_CACERT=../${module.leaf_tls_self_signed_cert.ca_cert_filename}
-  $ export CONSUL_CLIENT_CERT=../${module.leaf_tls_self_signed_cert.leaf_cert_filename}
-  $ export CONSUL_CLIENT_KEY=../${module.leaf_tls_self_signed_cert.leaf_private_key_filename}\n" : ""}
+  $ export CONSUL_CACERT=${path.cwd}/${module.leaf_tls_self_signed_cert.ca_cert_filename}
+  $ export CONSUL_CLIENT_CERT=${path.cwd}/${module.leaf_tls_self_signed_cert.leaf_cert_filename}
+  $ export CONSUL_CLIENT_KEY=${path.cwd}/${module.leaf_tls_self_signed_cert.leaf_private_key_filename}\n" : ""}
 # ------------------------------------------------------------------------------
 # Vault Best Practices
 # ------------------------------------------------------------------------------

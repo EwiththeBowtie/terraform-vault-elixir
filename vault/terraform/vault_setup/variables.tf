@@ -1,2 +1,7 @@
-variable "admin_username" {}
-variable "admin_password" {}
+variable "github_org" {
+	default = "terraform-vault-elixir"
+}
+
+variable "github_team" {
+  default = "administrators"
+}
